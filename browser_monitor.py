@@ -262,14 +262,11 @@ async def run_once(cfg: BrowserConfig) -> None:
         except Exception as exc:  # noqa: BLE001
             LOGGER.exception("Gemini analysis failed: %s", exc)
 
-        detected = bool(
-            result and result.mail_person_detected and result.door_unlocked
-        )
+        detected = bool(result and result.mail_person_detected)
         if result:
             LOGGER.info(
-                "Mail person: %s | Door unlocked: %s | confidence=%.2f | %s",
+                "Mail person detected: %s | confidence=%.2f | %s",
                 result.mail_person_detected,
-                result.door_unlocked,
                 result.confidence,
                 result.rationale,
             )

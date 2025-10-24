@@ -165,8 +165,8 @@ Adjust the segment length, poll interval, prompt, or Gemini model with the corre
 
 ## Integrating with UniFi access events
 
-- The script currently infers door unlocks only from visual cues in the clip. If you track access events from UniFi Protect/Access, you can merge those events by calling the script with `--once` when an unlock is detected, or by augmenting the script to push its conclusions to your automation pipeline.
-- For real-time alerts, wrap the script with a small supervisor that posts to Slack, email, or Home Assistant when `mail_person_detected` and `door_unlocked` are both `True` and the confidence exceeds your threshold.
+- The script currently infers delivery presence purely from visual cues in the clip. If you track access events from UniFi Protect/Access, you can merge those events by calling the script with `--once` when an unlock is detected, or by augmenting the script to push its conclusions to your automation pipeline.
+- For real-time alerts, wrap the script with a small supervisor that posts to Slack, email, or Home Assistant when `mail_person_detected` is `True` and the confidence exceeds your threshold.
 
 ## Troubleshooting
 

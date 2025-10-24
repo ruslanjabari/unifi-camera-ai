@@ -23,10 +23,11 @@ LOGGER = logging.getLogger("stream_monitor")
 
 DEFAULT_PROMPT = (
     "You are monitoring security footage for package and mail delivery events. "
-    "Explain whether the clip shows a mail carrier (postal worker or courier) unlocking "
-    "and opening the door. Respond strictly in JSON with fields: "
-    "'mail_person_detected' (boolean), 'door_unlocked' (boolean), "
-    "'confidence' (float between 0 and 1), and 'rationale' (short string)."
+    "Explain whether the clip shows a postal worker or delivery courier who is trying to enter the building or deliver an item. "
+    "Respond strictly in JSON with fields: "
+    "'mail_person_detected' (boolean), "
+    "'confidence' (float between 0 and 1), "
+    "and 'rationale' (short string)."
 )
 
 
@@ -46,7 +47,6 @@ class MonitorConfig:
 @dataclass
 class MonitorResult:
     mail_person_detected: bool
-    door_unlocked: bool
     confidence: float
     rationale: str
     raw_response: str
@@ -219,7 +219,6 @@ def analyze_clip(cfg: MonitorConfig, clip_path: Path) -> MonitorResult:
         raise ValueError(f"Unexpected boolean field {name}: {value}")
 
     mail_person = _bool_field("mail_person_detected")
-    door_unlocked = _bool_field("door_unlocked")
 
     try:
         confidence = float(payload.get("confidence", 0.0))
@@ -229,7 +228,6 @@ def analyze_clip(cfg: MonitorConfig, clip_path: Path) -> MonitorResult:
     rationale = str(payload.get("rationale", ""))
     return MonitorResult(
         mail_person_detected=mail_person,
-        door_unlocked=door_unlocked,
         confidence=confidence,
         rationale=rationale,
         raw_response=raw_text,
@@ -266,15 +264,12 @@ def main() -> None:
             except Exception as exc:  # noqa: BLE001
                 LOGGER.exception("Analysis failed: %s", exc)
 
-            detected = bool(
-                result and result.mail_person_detected and result.door_unlocked
-            )
+            detected = bool(result and result.mail_person_detected)
 
             if result:
                 LOGGER.info(
-                    "Mail person: %s | Door unlocked: %s | confidence=%.2f | %s",
+                    "Mail person detected: %s | confidence=%.2f | %s",
                     result.mail_person_detected,
-                    result.door_unlocked,
                     result.confidence,
                     result.rationale,
                 )

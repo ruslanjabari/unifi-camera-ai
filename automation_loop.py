@@ -288,13 +288,12 @@ def process_clip(
         result = analyze_clip(gemini_cfg, mp4_clip)
         if result:
             LOGGER.info(
-                "Gemini: mail=%s door=%s confidence=%.2f reason=%s",
+                "Gemini: mail=%s confidence=%.2f reason=%s",
                 result.mail_person_detected,
-                result.door_unlocked,
                 result.confidence,
                 result.rationale,
             )
-            detected = bool(result.mail_person_detected and result.door_unlocked)
+            detected = bool(result.mail_person_detected)
         else:
             LOGGER.info("Gemini returned no structured result.")
     except Exception as exc:  # noqa: BLE001
